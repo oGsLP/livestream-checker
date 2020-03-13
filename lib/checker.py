@@ -13,6 +13,8 @@ import json
 import time
 from bs4 import BeautifulSoup
 import colorful
+import os
+import yaml
 
 DOUYU_URL = "https://www.douyu.com/betard/"
 DOUYU_SEARCH_URL = "https://www.douyu.com/search/"
@@ -23,30 +25,54 @@ BILIBILI_DESC_URL = "https://api.live.bilibili.com/room/v1/room/get_recommend_by
 EGAME_URL = "https://egame.qq.com/"
 EGAME_API_URL = "https://share.egame.qq.com/cgi-bin/pgg_anchor_async_fcgi"
 
-MY_COMPANY_PALETTE = {
-    'companyOrange': '#f4b942',
-    'companyBaige': '#e8dcc5'
+INFO = {
+    "name": "livestream-checker",
+    "author": "oGsLP",
+    "repository": "www.github.com/oGsLP/livestream-checker",
+    "version": "0.1.0",
+    "publishDate": "20-03-13"
 }
 
 
 class Checker:
+    __list = {
+        "斗鱼": [],
+        "虎牙": [],
+        "B站": [],
+        "战旗": [],
+        "企鹅": []
+    }
 
     def __init__(self):
         # print("init")
         colorful.use_256_ansi_colors()
-        print()
+        self.__intro()
 
-    def check(self, platform, param):
-        if platform == "斗鱼":
-            self.__douyu_check(str(param))
-        elif platform == "虎牙":
-            self.__huya_check(str(param))
-        elif platform == "B站":
-            self.__bilibili_check(str(param))
-        elif platform == "战旗":
-            self.__zhanqi_check(str(param))
-        elif platform == "企鹅":
-            self.__egame_check(str(param))
+    def read_yml(self, _path):
+        if os.path.exists(_path):
+            self.__list = yaml.load(open(_path, 'r', encoding='utf-8').read(), Loader=yaml.FullLoader)
+        else:
+            f = open(_path, "w+")
+            f.close()
+            print("  文件不存在，已自动创建文件 %ds ,请在文件中配置相关信息" % _path)
+
+    def add_to_list(self, platform, room):
+        if room in self.__list[platform]:
+            print("请勿重复添加 平台：%s 房间：%s !" % (platform, str(room)))
+        else:
+            self.__list[platform].append(room)
+
+    def check(self):
+        for room in self.__list["斗鱼"]:
+            self.__douyu_check(str(room))
+        for room in self.__list["虎牙"]:
+            self.__huya_check(str(room))
+        for room in self.__list["B站"]:
+            self.__bilibili_check(str(room))
+        for room in self.__list["战旗"]:
+            self.__zhanqi_check(str(room))
+        for room in self.__list["企鹅"]:
+            self.__egame_check(str(room))
 
     def __douyu_check(self, room):
         room = self.__douyu_switch_id(room)
@@ -262,4 +288,11 @@ class Checker:
         else:
             print(colorful.dimGray("● 未直播"))
         print(desc)
+        print()
+
+    @staticmethod
+    def __intro():
+        print()
+        print("|  %s (v%s %s)" % (INFO["name"], INFO["version"], INFO["publishDate"]))
+        print("|  本程序由%s提供, %s, 喜欢的话可以给个star >_<" % (INFO["author"], INFO["repository"]))
         print()
