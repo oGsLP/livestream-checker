@@ -100,11 +100,13 @@ class Checker:
 
         self.__log_room(platform, category, game, name, room, live, desc)
         res.close()
+        time.sleep(0.2)
 
         # with open("data/douyu_" + room + ".json", "w") as fp:
         #     fp.write(json.dumps(dta, indent=2))
 
-    def __douyu_switch_id(self, room):
+    @staticmethod
+    def __douyu_switch_id(room):
 
         res = requests.get(DOUYU_SEARCH_URL, params={"kw": room}, headers={
             'accept': "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -141,6 +143,7 @@ class Checker:
 
         self.__log_room(platform, category, game, name, room, live, desc)
         res.close()
+        time.sleep(0.2)
 
         # with open("data/huya_" + room + ".html", "w",encoding="utf-8") as fp:
         #     fp.write(str(info))
@@ -174,6 +177,7 @@ class Checker:
             desc = "%s... | %s" % (json.loads(res.content.decode(encoding='utf-8'))['data']['tips'], title)
         self.__log_room(platform, category, game, name, room, live, desc)
         res.close()
+        time.sleep(0.2)
 
         # with open("data/bilibili_" + room + ".json", "w") as fp:
         #     fp.write(json.dumps(dta, indent=2))
@@ -231,6 +235,7 @@ class Checker:
 
         self.__log_room(platform, category, game, name, room, live, desc)
         res.close()
+        time.sleep(0.2)
 
     def __egame_check(self, room):
 
@@ -265,13 +270,14 @@ class Checker:
         else:
             desc = "上次直播时间(%s) | %s" % (t_start, title)
 
-        with open("data/egame_" + room + ".json", "w") as fp:
-            fp.write(json.dumps(dta, indent=2))
+        # with open("data/egame_" + room + ".json", "w") as fp:
+        #     fp.write(json.dumps(dta, indent=2))
 
         # with open("data/egame_" + room + ".html", "w", encoding="utf-8") as fp:
         #     fp.write(str(soup))
         self.__log_room(platform, category, game, name, room, live, desc)
         res.close()
+        time.sleep(0.2)
 
     @staticmethod
     def __resolve_timestamp(timestamp):

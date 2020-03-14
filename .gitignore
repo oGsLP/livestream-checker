@@ -1,4 +1,10 @@
 data
 test.py
+pack.py
+lsc.py
 .idea
 *.yml
+*.sh
+*.ico
+build
+dist
